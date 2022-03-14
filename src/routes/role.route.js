@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const userTypesController = require('../controllers/userTypes.controller');
+const roleController = require('../controllers/role.controller');
 const authenticateJWT = require("../middleware/authJwt")
 
 // Tag
 /**
  * @swagger
  *  tags:
- *   name: User Types
+ *   name: Roles
  */
 
 // Component
@@ -15,31 +15,41 @@ const authenticateJWT = require("../middleware/authJwt")
  * @swagger
  *  components:
  *      schemas:
- *          UserType:
+ *          Roles:
  *              type: object
  *              required: 
  *                  - name
+ *                  - salary
  *              properties:
  *                  id:
  *                      type: integer
- *                      description: User type id
+ *                      description: role id
  *                  name:
  *                      type: string
- *                      description: User type name
+ *                      description: role name
+ *                  salary:
+ *                      type: number
+ *                      format: double
  */
 
 /**
  * @swagger
- * /userTypes/:
+ * /roles/:
  *   get:
- *     description: Returns the list of user types
- *     tags: [User Types]
+ *     description: Returns the list of roles
+ *     tags: [Roles]
  *     parameters:
  *      - in: query
  *        name: name
  *        schema:
  *          type: string
- *        description: user type name 
+ *        description: role name
+ *      - in: query
+ *        name: salary
+ *        schema: 
+ *          type: number
+ *          format: double
+ *        description: role salary
  *      - in: query
  *        name: page
  *        schema:
@@ -52,103 +62,103 @@ const authenticateJWT = require("../middleware/authJwt")
  *        description: itens per page
  *     responses:
  *       200:
- *         description: The list of user types
+ *         description: The list of roles
  */
-router.get('/', [authenticateJWT], userTypesController.get);
+ router.get('/', [authenticateJWT], roleController.get);
 
 /**
  * @swagger
- * /userTypes/{id}:
+ * /roles/{id}:
  *   get:
- *     description: Returns one user type
- *     tags: [User Types]
+ *     description: Returns one role
+ *     tags: [Roles]
  *     parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: integer
  *        required: true
- *        description: user type id 
+ *        description: role id 
  *     responses:
  *       200:
- *         description: A user type
+ *         description: A role
  *       404:
- *          description: User not found
+ *          description: Role not found
  */
- router.get('/:id',[authenticateJWT], userTypesController.getOne);
+ router.get('/:id',[authenticateJWT], roleController.getOne);
 
 /**
  * @swagger
- * /userTypes/:
+ * /roles/:
  *   post:
- *     description: Creates a new user type
- *     tags: [User Types]
+ *     description: Creates a new role
+ *     tags: [Roles]
  *     requestBody:
  *      required: true
  *      content:
  *          application/json:
  *              schema: 
- *                  $ref: '#/components/schemas/UserType'
+ *                  $ref: '#/components/schemas/Roles'
  *     responses:
  *      201:
  *         description: The created user types
  *         content:
  *          application/json:
- *              $ref: '#/components/schemas/UserType'
+ *              $ref: '#/components/schemas/Roles'
  *      400:
- *          description: Error creating user type
+ *          description: Error creating role
  */
-router.post('/',[authenticateJWT], userTypesController.create);
+router.post('/',[authenticateJWT], roleController.create);
 
 /**
  * @swagger
- * /userTypes/{id}:
+ * /roles/{id}:
  *   put:
- *     description: Update a user type
- *     tags: [User Types]
+ *     description: Update a role
+ *     tags: [Roles]
  *     parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: integer
  *        required: true
- *        description: user type id 
+ *        description: role id 
  *     requestBody:
  *      required: true
  *      content:
  *          application/json:
  *              schema: 
- *                  $ref: '#/components/schemas/UserType'
+ *                  $ref: '#/components/schemas/Roles'
  *     responses:
  *      204:
- *         description: The updated user types
+ *         description: The updated role
  *         content:
  *          application/json:
- *              $ref: '#/components/schemas/UserType'
+ *              $ref: '#/components/schemas/Roles'
  *      400:
- *          description: Error updating user type
+ *          description: Error updating role
  */
-router.put('/:id',[authenticateJWT], userTypesController.update);
+router.put('/:id',[authenticateJWT], roleController.update);
 
 /**
  * @swagger
- * /userTypes/{id}:
+ * /roles/{id}:
  *   delete:
- *     description: Delete a user type
- *     tags: [User Types]
+ *     description: Delete a role
+ *     tags: [Roles]
  *     parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: integer
  *        required: true
- *        description: user type id 
+ *        description: role id 
  *     responses:
  *      204:
- *         description: The deleted user types
+ *         description: The deleted role
  *      400:
- *          description: Error creating user type
+ *          description: Error removing role
  */
-router.delete('/:id',[authenticateJWT], userTypesController.remove);
+router.delete('/:id',[authenticateJWT], roleController.remove);
 
 module.exports = router;

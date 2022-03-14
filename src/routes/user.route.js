@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/user.controller');
+const authenticateJWT = require("../middleware/authJwt")
 
 // Tag
 /**
  * @swagger
  *  tags:
- *   name: User
+ *   name: Users
  */
 
 // Component
@@ -14,57 +15,54 @@ const usersController = require('../controllers/user.controller');
  * @swagger
  *  components:
  *      schemas:
- *          User:
+ *          Users:
  *              type: object
  *              required: 
  *                  - name
  *              properties:
  *                  id:
  *                      type: integer
- *                      description: User id
- *                  username:
- *                      type: string
- *                      description: User name
+ *                      description: Users id
  *                  email:
  *                      type: string
- *                      description: User email
+ *                      description: Users email
  *                  password:
  *                      type: string
- *                      description: User password
+ *                      description: Users password
  *                  UserTypeId:
  *                      type: integer
- *                      description: User type id
+ *                      description: Users type id
  */
 
 /**
  * @swagger
- * /user/signup:
+ * /users/signup:
  *   post:
- *     description: Creates a new user
- *     tags: [User]
+ *     description: Creates a new users
+ *     tags: [Users]
  *     requestBody:
  *      required: true
  *      content:
  *          application/json:
  *              schema: 
- *                  $ref: '#/components/schemas/User'
+ *                  $ref: '#/components/schemas/Users'
  *     responses:
  *      201:
- *         description: The created user
+ *         description: The created users
  *         content:
  *          application/json:
- *              $ref: '#/components/schemas/User'
+ *              $ref: '#/components/schemas/Users'
  *      400:
- *          description: Error creating user
+ *          description: Error creating users
  */
  router.post('/signup', usersController.signup);
 
  /**
  * @swagger
- * /user/signin:
+ * /users/signin:
  *   post:
- *     description: Login user
- *     tags: [User]
+ *     description: Login users
+ *     tags: [Users]
  *     requestBody:
  *      required: true
  *      content:
@@ -72,19 +70,53 @@ const usersController = require('../controllers/user.controller');
  *              schema: 
  *                  type: object
  *                  properties:
- *                      username: 
+ *                      email: 
  *                          type: string
  *                      password:
  *                          type: string
  *     responses:
  *      200:
- *         description: The user data
+ *         description: The users data
  *         content:
  *          application/json:
- *              $ref: '#/components/schemas/User'
+ *              $ref: '#/components/schemas/Users'
  *      400:
- *          description: Error login user
+ *          description: Error login users
  */
  router.post('/signin', usersController.signin);
+
+/**
+ * @swagger
+ * /users/{id}:
+ *   put:
+ *     description: Login users
+ *     tags: [Users]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: users id 
+ *     requestBody:
+ *      required: true
+ *      content:
+ *          application/json:
+ *              schema: 
+ *                  type: object
+ *                  properties:
+ *                      email: 
+ *                          type: string
+ *                      password:
+ *                          type: string
+ *                      UserTypeId:
+ *                          type: integer
+ *     responses:
+ *      204:
+ *         description: The users updated
+ *      400:
+ *          description: Error updating users
+ */
+    router.put('/:id',[authenticateJWT], usersController.update)
 
 module.exports = router;

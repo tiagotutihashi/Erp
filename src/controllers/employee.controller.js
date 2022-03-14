@@ -1,9 +1,9 @@
-const userType = require('../services/userTypes.service')
+const employee = require('../services/employee.service')
 
 async function get(req, res, next) {
   try {
-    const userTypeList = await userType.findAll(req.query)
-    res.json(userTypeList)
+    const employeeList = await employee.findAll(req.query)
+    res.json(employeeList)
   } catch (err) {
     res.status(400).json({ message: err.message })
     next(err)
@@ -12,10 +12,10 @@ async function get(req, res, next) {
 
 async function getOne(req, res, next) {
   try {
-    const foundUserType = await userType.findOne(req.params.id)
+    const foundEmployee = await employee.findOne(req.params.id)
 
-    if(foundUserType){
-      res.json(foundUserType)
+    if(foundEmployee){
+      res.json(foundEmployee)
     } else {
       res.status(404).send();
     }
@@ -28,8 +28,8 @@ async function getOne(req, res, next) {
 async function create(req, res, next) {
   try {
     const { body } = req
-    const createdUserType = await userType.create(body)
-    res.status(201).json(createdUserType)
+    const createdEmployee = await employee.create(body)
+    res.status(201).json(createdEmployee)
   } catch (err) {
     res.status(400).json({ message: err.message })
     next(err)
@@ -39,8 +39,8 @@ async function create(req, res, next) {
 async function update(req, res, next) {
   try {
     const { body, params } = req
-    const createdUserType = await userType.update(params.id, body)
-    if (createdUserType) {
+    const createdEmployee = await employee.update(params.id, body)
+    if (createdEmployee) {
       res.status(204).send()
     } else {
       res.status(400).send()
@@ -54,8 +54,8 @@ async function update(req, res, next) {
 async function remove(req, res, next) {
   try {
     const { params } = req
-    const removedUserType = await userType.remove(params.id)
-    if (removedUserType) {
+    const removedEmployee = await employee.remove(params.id)
+    if (removedEmployee) {
       res.status(204).send()
     } else {
       res.status(400).send()

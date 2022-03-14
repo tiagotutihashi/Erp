@@ -1,33 +1,63 @@
 const { Op } = require('sequelize')
 const db = require('./db.service')
+const { listPage, listPerPage } = require("../config/general.config")
 
 const UserType = db.userType
 
-async function Create(userType) {
+async function create(userType) {
   const data = UserType.create(userType)
 
   return data
 }
 
-async function FindAll(filters) {
-  const { name } = filters
+async function findAll(filters) {
+  const { name, page, perPage } = filters
 
   const condition = name ? { name: { [Op.like]: `%${name}%` } } : null
+  
+  let offsetPage = listPage;
 
-  const result = await UserType.findAll({
+  if(page){
+    offsetPage = page - 1
+  } 
+
+  if(perPage){
+    offsetPage = offsetPage * perPage
+  } else {
+    offsetPage = offsetPage * listPerPage
+  }
+
+  const perPageAmount = parseInt(perPage, 10) || listPerPage;
+
+  const result = await UserType.findAndCountAll({
     where: condition,
+    limit: perPageAmount,
+    offset: offsetPage 
   })
 
-  return result
+  let currentPage = offsetPage;
+
+  if(page == 1 || offsetPage == 0){
+    currentPage = offsetPage + 1
+  }
+
+  const dataToSend = {
+    page: currentPage,
+    totalPages: Math.ceil(result.count / perPageAmount),
+    perPage: perPageAmount,
+    ...result,
+  }
+
+  return dataToSend
 }
 
-async function FindOne(id) {
+async function findOne(id) {
   const result = await UserType.findByPk(id)
 
   return result
 }
 
-async function Update(id, userType) {
+async function update(id, userType) {
   const updatedUserType = await UserType.update(userType, {
     where: { id },
   })
@@ -35,7 +65,7 @@ async function Update(id, userType) {
   return updatedUserType
 }
 
-async function Remove(id) {
+async function remove(id) {
   const deletedUserType = await UserType.destroy({
     where: { id },
   })
@@ -44,9 +74,9 @@ async function Remove(id) {
 }
 
 module.exports = {
-  Create,
-  FindAll,
-  FindOne,
-  Update,
-  Remove,
+  create,
+  findAll,
+  findOne,
+  update,
+  remove,
 }
