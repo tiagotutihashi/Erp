@@ -29,7 +29,12 @@ async function create(req, res, next) {
   try {
     const { body } = req
     const createdEmployee = await employee.create(body)
-    res.status(201).json(createdEmployee)
+
+    if(createdEmployee.message){
+      res.status(404).json(createdEmployee)
+    } else {
+      res.status(201).json(createdEmployee)
+    }
   } catch (err) {
     res.status(400).json({ message: err.message })
     next(err)

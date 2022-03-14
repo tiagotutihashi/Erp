@@ -8,6 +8,13 @@ const Role = db.role;
 async function create(employee) {
   const { RoleId, ...rest} = employee
 
+    if(RoleId){
+      const role = await Role.findByPk(RoleId);
+      if(!role){
+        return { message: "RoleId not found"}; 
+      }
+    }
+
     const data = await Employee.create(rest)
     
     if(data){

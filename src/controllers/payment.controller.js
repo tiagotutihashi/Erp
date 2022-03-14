@@ -29,7 +29,11 @@ async function create(req, res, next) {
     try {
       const { body } = req
       const createdPayment = await payment.create(body)
-      res.status(201).json(createdPayment)
+      if(createdPayment.message){
+        res.status(404).json(createdPayment)
+      } else {
+        res.status(201).json(createdPayment)
+      }
     } catch (err) {
       res.status(400).json({ message: err.message })
       next(err)

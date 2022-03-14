@@ -8,12 +8,15 @@ const Employee = db.employee;
 async function create(payment) {
     const { EmployeeId, ...rest} = payment
 
+    const employee = await Employee.findByPk(EmployeeId);
+    if(!employee){
+        return { message: "EmployeeId not found"}; 
+    }
+
     const data = await Payment.create(rest)
     
     if(data){
         const employee = await Employee.findByPk(EmployeeId);
-
-        console.log(employee)
         if(employee){
             await data.setEmployee(employee)
         }

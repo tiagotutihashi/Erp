@@ -20,6 +20,12 @@ async function create(user) {
     return { message: "UserTypeId is invalid, must be greater than 0"}
   }
 
+  const userType = await UserType.findByPk(user.UserTypeId)
+
+  if (!userType) {
+    return { message: "UserTypeId not found"}
+  }
+
   const foundUser = await User.findOne({
     where: {
       email: user.email
@@ -37,8 +43,6 @@ async function create(user) {
 
   if (createdUser) {
     if (user.UserTypeId) {
-      const userType = await UserType.findByPk(user.UserTypeId)
-
       if (userType) {
         await createdUser.setUserType(userType)
       }
